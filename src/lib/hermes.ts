@@ -1,9 +1,9 @@
 import { createOpenAI } from "@ai-sdk/openai";
 import { generateText } from "ai";
 
+// Calls OpenAI directly — the PM skill prompts below are our Hermes skill implementations
 export const hermes = createOpenAI({
-  baseURL: `${process.env.HERMES_BASE_URL ?? "http://localhost:8642"}/v1`,
-  apiKey: "hermes-local",
+  apiKey: process.env.OPENAI_API_KEY ?? "missing-key",
 });
 
 export const MODEL = "gpt-4o-mini";

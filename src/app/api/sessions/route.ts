@@ -2,6 +2,17 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { callHermes, parseJSON } from "@/lib/hermes";
 import { ClarifyOutputSchema } from "@/lib/schemas";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+const ratelimit = new Ratelimit({
+  redis: new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL!,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  }),
+  limiter: Ratelimit.slidingWindow(10, "1 d"),
+  prefix: "mypmagent:sessions",
+});
 
 const SYSTEM = `You are a senior PM assistant. Given a raw product idea or call transcript, generate 3-5 targeted clarifying questions to help write a better PRD.
 
@@ -18,6 +29,25 @@ export async function POST(request: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { success, limit, remaining, reset } = await ratelimit.limit(user.id);
+  if (!success) {
+    return NextResponse.json(
+      {
+        error: `Daily limit reached. You have used ${limit} sessions today. Resets at ${new Date(reset).toLocaleTimeString()}.`,
+        limit,
+        remaining: 0,
+      },
+      {
+        status: 429,
+        headers: {
+          "X-RateLimit-Limit": String(limit),
+          "X-RateLimit-Remaining": String(remaining),
+          "X-RateLimit-Reset": String(reset),
+        },
+      }
+    );
+  }
 
   const body = await request.json();
   const { raw_idea, transcript } = body;
@@ -56,7 +86,7 @@ export async function POST(request: Request) {
       }))
     );
 
-    return NextResponse.json({ sessionId: session.id, questions: parsed.questions });
+    return NextResponse.json({ sessionId: session.id, questions: parsed.questions, remaining });
   } catch {
     return NextResponse.json({ sessionId: session.id, questions: [], hermesError: true });
   }
