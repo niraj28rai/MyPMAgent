@@ -52,6 +52,8 @@ export async function POST(request: Request) {
   const body = await request.json();
   const { raw_idea, transcript } = body;
   if (!raw_idea?.trim()) return NextResponse.json({ error: "raw_idea is required" }, { status: 400 });
+  if (raw_idea.length > 8000) return NextResponse.json({ error: "Idea is too long. Keep it under 8,000 characters." }, { status: 400 });
+  if (transcript && transcript.length > 20000) return NextResponse.json({ error: "Transcript is too long. Keep it under 20,000 characters." }, { status: 400 });
 
   const { data: session, error: sessionError } = await supabase
     .from("sessions")

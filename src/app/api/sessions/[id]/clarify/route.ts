@@ -33,7 +33,6 @@ export async function POST(
 
   try {
     const text = await callHermes(SYSTEM, prompt, 2000);
-    console.log("[clarify-retry] raw:", text.slice(0, 300));
     const parsed = ClarifyOutputSchema.parse(parseJSON(text));
 
     // Delete old clarifications and insert fresh ones
