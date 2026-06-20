@@ -8,7 +8,7 @@ export const QuestionSchema = z.object({
 });
 
 export const ClarifyOutputSchema = z.object({
-  questions: z.array(QuestionSchema).min(3).max(5),
+  questions: z.array(QuestionSchema).min(1).max(7),
 });
 
 export const PlanSectionSchema = z.object({

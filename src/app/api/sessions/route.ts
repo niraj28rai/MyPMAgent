@@ -87,7 +87,8 @@ export async function POST(request: Request) {
     );
 
     return NextResponse.json({ sessionId: session.id, questions: parsed.questions, remaining });
-  } catch {
-    return NextResponse.json({ sessionId: session.id, questions: [], hermesError: true });
+  } catch (e) {
+    console.error("[clarify] failed:", e);
+    return NextResponse.json({ sessionId: session.id, questions: [], hermesError: String(e) });
   }
 }
