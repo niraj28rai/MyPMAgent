@@ -19,9 +19,16 @@ export async function callHermes(system: string, prompt: string, maxTokens = 400
 }
 
 export function parseJSON<T>(text: string): T {
-  const cleaned = text
-    .replace(/^```(?:json)?\s*/i, "")
-    .replace(/\s*```$/, "")
-    .trim();
-  return JSON.parse(cleaned) as T;
+  // Fast path: already clean JSON
+  try { return JSON.parse(text.trim()) as T; } catch { /* fall through */ }
+
+  // Strip markdown fences anywhere in the text
+  const stripped = text.replace(/```(?:json)?\s*/gi, "").replace(/```/g, "").trim();
+  try { return JSON.parse(stripped) as T; } catch { /* fall through */ }
+
+  // Extract first JSON object or array from anywhere in the text
+  const match = stripped.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
+  if (match) return JSON.parse(match[1]) as T;
+
+  throw new Error(`No valid JSON in response: ${text.slice(0, 200)}`);
 }

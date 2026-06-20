@@ -280,13 +280,25 @@ export default function SessionPage() {
             <SpecNumber className="mb-2 block">§01 / CLARIFY</SpecNumber>
             <h1 className="font-[family-name:var(--font-instrument-serif)] italic text-[2.25rem] tracking-[-0.015em] text-[var(--ink)] mb-2">A few quick questions.</h1>
             <p className="text-sm text-[var(--graphite)] mb-10">Answer what you can. Skip anything optional.</p>
-            {questions.length === 0
-              ? <p className="text-sm text-[var(--graphite)]">No clarifying questions — ready to continue.</p>
-              : questions.map((q) => (
+            {questions.length === 0 ? (
+              <div className="flex items-center gap-4 mb-6">
+                <p className="text-sm text-[var(--graphite)]">No clarifying questions generated.</p>
+                <Button variant="ghost" size="sm" onClick={async () => {
+                  setError("");
+                  try {
+                    const res = await fetch(`/api/sessions/${sessionId}/clarify`, { method: "POST" });
+                    const data = await res.json();
+                    if (data.error) throw new Error(data.error);
+                    setQuestions(data.questions);
+                  } catch (e) { setError(String(e)); }
+                }}>Retry →</Button>
+              </div>
+            ) : (
+              questions.map((q) => (
                 <QuestionCard key={q.id} id={q.id} text={q.text} whyItMatters={q.why_it_matters} optional={q.optional}
                   answer={answers[q.id] ?? ""} onAnswer={(v) => setAnswers((a) => ({ ...a, [q.id]: v }))} />
               ))
-            }
+            )}
             <div className="mt-8 flex justify-end">
               <Button onClick={handleContinueToPlan}>Continue →</Button>
             </div>
