@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/* §6.1 — Design tokens */
+:root {
+  --ink:       #0E0E10;
+  --paper:     #FCFBF8;
+  --graphite:  #6B6B70;
+  --mist:      #E5E3DD;
+  --blueprint: #1E3A8A;
+  --vermilion: #C8553D;
+  --paper-2:   #F4F1EA;
+}
+
+@theme inline {
+  --color-ink:       var(--ink);
+  --color-paper:     var(--paper);
+  --color-graphite:  var(--graphite);
+  --color-mist:      var(--mist);
+  --color-blueprint: var(--blueprint);
+  --color-vermilion: var(--vermilion);
+  --color-paper-2:   var(--paper-2);
+  --font-display: var(--font-instrument-serif);
+  --font-sans:    var(--font-inter);
+  --font-mono:    var(--font-jetbrains-mono);
+}
+
+/* Base */
+html {
+  background-color: var(--paper);
+  color: var(--ink);
+}
+
+body {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* §6.5 — Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
