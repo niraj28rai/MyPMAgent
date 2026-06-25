@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyPMAgent — LinkedIn Carousel</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { background: #1a1a1a; font-family: 'Inter', sans-serif; padding: 24px; }
+
+.controls {
+  max-width: 600px; margin: 0 auto 24px;
+  background: #2a2a2a; border-radius: 8px; padding: 16px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.controls p { color: #aaa; font-size: 13px; }
+.controls button {
+  background: #1E3A8A; color: #fff; border: none; border-radius: 4px;
+  padding: 8px 20px; font-size: 13px; font-weight: 500; cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+.controls button:hover { background: #2B4FBF; }
+
+.slides { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+
+.slide {
+  width: 100%; aspect-ratio: 1/1;
+  display: flex; flex-direction: column;
+  padding: 8%; position: relative;
+}
+
+.slide-dark  { background: #0E1628; }
+.slide-light { background: #ffffff; }
+.slide-navy  { background: #1E3A8A; }
+.slide-cream { background: #F7F4EF; }
+
+.label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.label-muted { color: rgba(255,255,255,0.4); }
+.label-blue  { color: #1E3A8A; }
+.label-gray  { color: #888580; }
+
+.rule-dark  { width: 100%; height: 1px; background: rgba(255,255,255,0.12); margin: 5% 0; }
+.rule-light { width: 100%; height: 1px; background: #E0DDD8; margin: 5% 0; }
+
+.serif { font-family: 'Instrument Serif', serif; font-style: italic; }
+
+.h1-dark  { color: #fff;    font-size: clamp(28px, 8.5vw, 52px); line-height: 1.1; }
+.h1-light { color: #0E0E10; font-size: clamp(28px, 8.5vw, 52px); line-height: 1.1; }
+.h1-white { color: #fff;    font-size: clamp(24px, 7.5vw, 46px); line-height: 1.1; }
+
+.body-dark  { color: rgba(255,255,255,0.6); font-size: clamp(12px,2.1vw,15px); line-height: 1.6; }
+.body-light { color: #4A4A4F;              font-size: clamp(12px,2.1vw,15px); line-height: 1.6; }
+.body-white { color: rgba(255,255,255,0.8); font-size: clamp(12px,2.1vw,15px); line-height: 1.6; }
+
+.stat { font-family:'Instrument Serif',serif; font-style:italic; font-size:clamp(52px,15vw,96px); color:#fff; line-height:1; }
+.stat-unit { font-size:40%; color:rgba(255,255,255,0.45); }
+
+.tag {
+  display:inline-block; font-family:'JetBrains Mono',monospace;
+  font-size:clamp(8px,1.4vw,10px); font-weight:500; letter-spacing:0.06em;
+  text-transform:uppercase; padding:4px 10px; margin:3px 3px 0 0;
+}
+.tag-dark  { background:rgba(255,255,255,0.1);  color:rgba(255,255,255,0.7); }
+.tag-light { background:#EFF4FF; color:#1E3A8A; }
+.tag-gray  { background:#EEEBE5; color:#4A4A4F; }
+
+.box-dark  { background:rgba(255,255,255,0.07); padding:5%; border-left:2px solid rgba(255,255,255,0.25); }
+.box-light { background:#F0EDE8; padding:5%; border-left:2px solid #1E3A8A; }
+
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.cell  { padding:3% 4%; font-family:'JetBrains Mono',monospace; font-size:clamp(8px,1.5vw,10px); letter-spacing:0.06em; text-transform:uppercase; }
+
+.num {
+  position:absolute; bottom:6%; right:7%;
+  font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:0.08em;
+}
+.num-dark  { color:rgba(255,255,255,0.18); }
+.num-light { color:#C5C2BB; }
+
+.cta-url { font-family:'JetBrains Mono',monospace; font-size:clamp(10px,1.8vw,13px); color:#fff; letter-spacing:0.04em; }
+
+@media print {
+  body { background: none; padding: 0; }
+  .controls { display: none; }
+  .slides { max-width: none; gap: 0; }
+  .slide {
+    width: 100vmin; height: 100vmin;
+    page-break-after: always; break-after: page;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <p>9 slides · open in Chrome · File → Print → Save as PDF</p>
+  <button onclick="window.print()">Print / Save as PDF</button>
+</div>
+
+<div class="slides">
+
+  <!-- 1: Hook -->
+  <div class="slide slide-dark">
+    <span class="label label-muted">MyPMAgent</span>
+    <div class="rule-dark"></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6%;">
+      <div class="serif h1-dark">I built a PM<br>agent in 4 days.</div>
+      <p class="body-dark">Raw idea → PRD + Linear-ready tickets.<br>With you in the loop at every step.</p>
+    </div>
+    <div class="rule-dark"></div>
+    <span class="label label-muted">Swipe to see how it works →</span>
+    <span class="num num-dark">01 / 09</span>
+  </div>
+
+  <!-- 2: Problem -->
+  <div class="slide slide-dark">
+    <span class="label label-muted">The problem</span>
+    <div class="rule-dark"></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6%;">
+      <div class="stat">60–90<br><span class="stat-unit">minutes</span></div>
+      <p class="body-dark" style="max-width:85%;">That's how long PMs spend per idea just to get to a PRD and tickets their team will actually use.</p>
+      <p class="body-dark">Existing tools generate generic output.<br><span style="color:#fff;">PMs end up rewriting half of it.</span></p>
+    </div>
+    <span class="num num-dark">02 / 09</span>
+  </div>
+
+  <!-- 3: Solution -->
+  <div class="slide slide-light">
+    <span class="label label-blue">The solution</span>
+    <div class="rule-light"></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6%;">
+      <div class="serif h1-light">The PM stays<br>in control at<br>every step.</div>
+      <p class="body-light">The agent clarifies, plans, and waits for your approval before writing a single word. No surprises.</p>
+      <div>
+        <span class="tag tag-light">Clarify</span>
+        <span class="tag tag-light">Plan</span>
+        <span class="tag tag-light">Draft PRD</span>
+        <span class="tag tag-light">Generate tickets</span>
+      </div>
+    </div>
+    <span class="num num-light">03 / 09</span>
+  </div>
+
+  <!-- 4: Clarify -->
+  <div class="slide slide-dark">
+    <span class="label label-muted">Step 1 of 4</span>
+    <div class="rule-dark"></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5%;">
+      <div class="serif h1-dark">Paste a<br>messy idea.</div>
+      <div class="box-dark">
+        <p class="label" style="color:rgba(255,255,255,0.35);margin-bottom:8px;">Agent asks</p>
+        <p style="color:#fff;font-size:clamp(12px,2.1vw,14px);line-height:1.55;font-family:'Inter',sans-serif;margin-bottom:6px;">"Who specifically feels this pain — a PM at a startup or an enterprise team?"</p>
+        <p class="body-dark" style="font-size:clamp(10px,1.7vw,12px);">3–5 targeted questions. Each explains why it matters.</p>
+      </div>
+    </div>
+    <span class="num num-dark">04 / 09</span>
+  </div>
+
+  <!-- 5: Plan -->
+  <div class="slide slide-cream">
+    <span class="label label-blue">Step 2 of 4</span>
+    <div class="rule-light"></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5%;">
+      <div class="serif h1-light">It plans before<br>it writes.</div>
+      <p class="body-light" style="margin-bottom:4%;">The agent proposes a 7-section outline with a ticket estimate. You edit and approve before a word is drafted.</p>
+      <div class="grid2">
+        <div class="cell" style="background:#E8E5DF;color:#4A4A4F;">Problem</div>
+        <div class="cell" style="background:#E8E5DF;color:#4A4A4F;">Users</div>
+        <div class="cell" style="background:#E8E5DF;color:#4A4A4F;">Goals</div>
+        <div class="cell" style="background:#E8E5DF;color:#4A4A4F;">Non-goals</div>
+        <div class="cell" style="background:#1E3A8A;color:#fff;">Solution</div>
+        <div class="cell" style="background:#1E3A8A;color:#fff;">Metrics</div>
+      </div>
+    </div>
+    <span class="num num-light">05 / 09</span>
+  </div>
+
+  <!-- 6: Draft PRD -->
+  <div class="slide slide-light">
+    <span class="label label-blue">Step 3 of 4</span>
+    <div class="rule-light"></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5%;">
+      <div class="serif h1-light">PRD writes<br>itself, section<br>by section.</div>
+      <p class="body-light">Written to the standard of a staff PM — quantified problems, named personas, explicit tradeoffs. No filler.</p>
+      <p class="body-light" style="margin-top:3%;">Edit inline. Regenerate with feedback. Revise the whole thing if needed.</p>
+    </div>
+    <span class="num num-light">06 / 09</span>
+  </div>
+
+  <!-- 7: Tickets -->
+  <div class="slide slide-dark">
+    <span class="label label-muted">Step 4 of 4</span>
+    <div class="rule-dark"></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:5%;">
+      <div class="serif h1-dark">Linear-ready<br>tickets.</div>
+      <div class="box-dark">
+        <p class="label" style="color:rgba(255,255,255,0.35);margin-bottom:6px;">T-001 / Add CSV export</p>
+        <p style="color:rgba(255,255,255,0.45);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.06em;margin-bottom:8px;">Priority: P1 · Estimate: M</p>
+        <p class="body-dark" style="font-size:clamp(10px,1.7vw,12px);">Given a user on Analytics, when they click Export, then a CSV downloads within 3 seconds.</p>
+      </div>
+      <p class="body-dark">Imperative titles. Given/When/Then criteria. Priority, estimate, labels. Copy as markdown or Linear CSV.</p>
+    </div>
+    <span class="num num-dark">07 / 09</span>
+  </div>
+
+  <!-- 8: How it's built -->
+  <div class="slide slide-navy">
+    <span class="label label-muted">How it's built</span>
+    <div class="rule-dark"></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:6%;">
+      <p style="color:#fff;font-size:clamp(13px,2.3vw,16px);line-height:1.6;font-family:'Inter',sans-serif;">Forked <span style="color:#93B4FF;font-weight:500;">Hermes Agent</span> by Nous Research — open-source, OpenAI-compatible API. Added 4 custom PM skills on top.</p>
+      <p class="body-white">Zero glue code. All PM logic lives in the skills.<br>Total cost across 4 days of dev: <span style="color:#fff;font-weight:500;">under $2.</span></p>
+      <div>
+        <span class="tag tag-dark">Next.js 15</span>
+        <span class="tag tag-dark">Vercel</span>
+        <span class="tag tag-dark">Supabase</span>
+        <span class="tag tag-dark">gpt-4o-mini</span>
+        <span class="tag tag-dark">Upstash Redis</span>
+        <span class="tag tag-dark">Tailwind v4</span>
+      </div>
+    </div>
+    <span class="num" style="color:rgba(255,255,255,0.18);">08 / 09</span>
+  </div>
+
+  <!-- 9: CTA -->
+  <div class="slide slide-dark">
+    <span class="label label-muted">MyPMAgent</span>
+    <div class="rule-dark"></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:7%;">
+      <div class="serif h1-dark">Try it.<br>Fork it.<br>Ship faster.</div>
+      <div style="display:flex;flex-direction:column;gap:5%;">
+        <div>
+          <p class="label label-muted" style="margin-bottom:6px;">Source code</p>
+          <p class="cta-url">github.com/niraj28rai/MyPMAgent</p>
+        </div>
+      </div>
+    </div>
+    <div class="rule-dark"></div>
+    <span class="label label-muted">GitHub link in comments</span>
+    <span class="num num-dark">09 / 09</span>
+  </div>
+
+</div>
+</body>
+</html>
